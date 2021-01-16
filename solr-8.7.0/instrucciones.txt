@@ -1,0 +1,3 @@
+.\solr start
+.\solr create_core -c start
+java -Dc=start -jar example\exampledocs\post.jar delete.xml
