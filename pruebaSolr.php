@@ -5,7 +5,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ConnectException;
 addDocument();
-//echo file_get_contents("http://localhost:8983/solr/repository/select?q=Name%3A*Daniel*");
+//echo file_get_contents("http://localhost:8983/solr/repository/selectCheck?q=Name%3A*Daniel*");
 
 function addDocument(){ //este va a añadirse
     $ch = curl_init("http://localhost:8983/solr/start/update/extract?commit=true");
