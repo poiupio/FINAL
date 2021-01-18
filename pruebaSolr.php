@@ -10,22 +10,26 @@ addDocument();
 function addDocument(){ //este va a añadirse
     $ch = curl_init("http://localhost:8983/solr/start/update/extract?commit=true");
 
-    $url = "https://api.drupal.org/api/drupal/vendor%21guzzlehttp%21guzzle%21src%21Exception%21ConnectException.php/function/ConnectException%3A%3AgetResponse/8.0.x";
+    $urls = 'https://www.marista.edu.mx/,https://www.unimodelo.edu.mx/,https://www.uady.mx/,http://www.cesctm.edu.mx/,https://www.unam.mx/,https://www.itmerida.mx/';
+    $urls = explode(",", $urls);
 
-    $data_string = petitionGuzzle($url);//file_get_contents($data);
+    for ($i=0; $i < count($urls); $i++) {
+        $data_string = petitionGuzzle($urls[$i]);//file_get_contents($data);    
 
-    try {
-        if ($data_string->getStatusCode() == 200) {
-            echo $data_string->getBody();
-            /*curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-            curl_setopt($ch, CURLOPT_POST, TRUE);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-        
-            echo curl_exec($ch);*/
+        try {
+            if ($data_string->getStatusCode() == 200) {
+                //echo $data_string->getBody();
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+                curl_setopt($ch, CURLOPT_POST, TRUE);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string->getBody());
+            
+                echo curl_exec($ch);
+            }
+        } catch (\Throwable $th) {
+            echo $data_string["error"];
         }
-    } catch (\Throwable $th) {
-        echo $data_string["error"];
+
     }
 }
 

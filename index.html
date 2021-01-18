@@ -3,7 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" type="text/css" href="voice/css/index.css">
   <LINK REL=StyleSheet HREF="css/styles.css" TYPE="text/css" MEDIA=screen>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
   <title>Buscador</title>
 </head>
 <body>
@@ -13,7 +17,8 @@
     <main>
         <div class="buscador">
             <div class="searchForm">
-                <input type="search" id="inputSearch" class="searchBar" placeholder="Introduce tu búsqueda aquí">
+                <input type="search" id="inputSearch" class="searchBar" placeholder="Introduce tu búsqueda aquí"> 
+                <button class="form__microphone-icon" type="button" title="Búsqueda por voz"></button>
                 <input type="button" id="btn" class="searchBtn" value="Buscar">
             </div>
         </div>
@@ -21,5 +26,18 @@
         <div id="resultados"></div>
     </main>
     <script src="js/search.js"></script>
+
+    <div class="voice-search">
+      <div class="voice-search__close-modal">X</div>
+      <div class="voice-search__result">
+        <div class="voice-search__result-text"></div>
+      </div>
+      <div class="voice-search__animation">
+        <span class="voice-search__microphone-icon fas fa-microphone"></span>
+        <span class="voice-search__microphone-border"></span>
+      </div>
+    </div>
+  <script src="voice/js/voice-search.js"></script>
+
 </body>
 </html>

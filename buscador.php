@@ -1,17 +1,19 @@
 <?php
-    if(isset($_GET['consulta'])) {
-        $diccionario = array("and", "or", "patron(");
-        $cadena = strtolower ($_GET['consulta']);
-        $arrayDividido = explode(" ", $cadena);
-        $arrayDividido = array_values(removeEmptyElements($arrayDividido));
+$consulta = "MéRIDA not YUCATÁN";
+    //if(isset($_GET['consulta'])) {
+        $diccionario = array("and", "or","not");
+        //$consulta = strtolower ($_GET['consulta']);
+        $consulta = strtolower ($consulta);
+        $arrayDividido = explode(" ", $consulta);
+        //$arrayDividido = array_values(removeEmptyElements($arrayDividido));
         $tamaño = count($arrayDividido);
-        $sentenciaSQL = "";
-        $primero = array();
+        $sentenciaSolr = 'http://localhost:8983/solr/start/selectCheck?debug.explain.structured=true&debugQuery=on&df=attr_text&hl.fl=attr_text&hl=true&q=';
         $tipoAnterior = "elemento";
-        $query = array();
-    
-        for ($i=0; $i < $tamaño; $i++) {
-            $variable = substr($arrayDividido[$i], 0, 7);
+        //para el primer elemento
+        $sentenciaSolr = $sentenciaSolr.'(*'.quitarTildes($arrayDividido[0]).'*)';
+
+        for ($i=1; $i < $tamaño; $i++) {
+            $variable = quitarTildes($arrayDividido[$i]);
             switch ($variable) {
                 case $diccionario[0]:
                     $tipoAnterior = "and";
@@ -20,61 +22,59 @@
                     $tipoAnterior = "or";
                     break;
                 case $diccionario[2]:
-                    $busqueda = dividirCadena($arrayDividido, $i, "patron(", $tamaño);
-                    $sentenciaSQL = agregarPalabra($arrayDividido[$i], $tipoAnterior, $busqueda);
-                    $tipoAnterior = "elemento";
+                    $tipoAnterior = "not";
                     break;
                 default:
-                    $sentenciaSQL = agregarPalabra($arrayDividido[$i], $tipoAnterior, $sentenciaSQL);
-                    array_push($query, $arrayDividido[$i]);
+                    $sentenciaSolr = agregarPalabra($variable, $tipoAnterior, $sentenciaSolr);
                     $tipoAnterior = "elemento";
                     break;
             }
         }
-    } else{
+    /*} else{
         echo 'error';
-    }
+    }*/
 
-    $resultados = DBConection($sentenciaSQL);
+    //echo $sentenciaSolr;
+    $resultados = file_get_contents($sentenciaSolr);
+    //SolrConection($sentenciaSolr);
     echo json_encode($resultados);
 
-    function DBConection($sentenciaSQL){
-        $servername = "localhost";
-        $username = "root";
-        $password = "admin";
-        $dbname = "busquedas";
-    
-        // Create connection
-        $conn = new mysqli($servername, $username, $password, $dbname);
-        // Check connection
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        }
+    function quitarTildes($cadena) {
+        $no_permitidas = array ("á","é","í","ó","ú","Á","É","Í","Ó","Ú","ñ","Ñ");
+        $permitidas = array ("a","e","i","o","u","A","E","I","O","U","n","N");
+        $texto = str_replace($no_permitidas, $permitidas, $cadena);
+        return $texto;
+    }
 
-        $sql = "SELECT link FROM documents WHERE MATCH (descripcion) AGAINST ('$sentenciaSQL' IN BOOLEAN MODE)";
-        $result = $conn->query($sql);
-
-        $arrayResultados = array();
-        if ($result->num_rows > 0) {
-            // output data of each row
-            while($row = $result->fetch_assoc()) {
-                array_push($arrayResultados, $row);
+    function SolrConection($sentenciaSolr){
+        $file = file_get_contents($sentenciaSolr);
+        return $file;
+        //eval("\$result = " . $file . ";");
+        //eval("\$result = \"$file\";");
+        /*for($i=0; $i<count($file["response"]["docs"]) ; $i++){
+            echo "=========Result ".($i+$start+1)."=========<br>";
+            foreach($file["response"]["docs"][$i] as $k=>$v){
+                //display($k,$v);
+                echo "<br>";
             }
-        }
-        $conn->close();
-        return $arrayResultados;
+            echo "<br>";
+        }*/
     }
 
-    function agregarPalabra($palabra, $tipoAnterior, $sentenciaSQL){
-        if (($tipoAnterior == "elemento") || ($tipoAnterior == "or")) {
-            $sentenciaSQL = "(" . $sentenciaSQL . "*" . $palabra . "*) ";
-        } else {
-            $sentenciaSQL = "(" . $sentenciaSQL . "+ *" . $palabra . "*) ";
+    function agregarPalabra($palabra, $tipoAnterior, $sentenciaSolr){
+        if ($tipoAnterior == "elemento" || $tipoAnterior == "or") {
+             $sentenciaSolr = $sentenciaSolr . 'OR(*' . $palabra .'*)';
+        } else if ($tipoAnterior == "not") {
+            $sentenciaSolr = $sentenciaSolr . '%20NOT(*' . $palabra .'*)';
+        } else { 
+            $sentenciaSolr = $sentenciaSolr . 'AND(*' . $palabra . '*)';
         }
-        return $sentenciaSQL;
+        return $sentenciaSolr;
     }
 
-    function dividirCadena($arrayDividido, $i, $divisor, $tamaño){
+
+
+   /*  function dividirCadena($arrayDividido, $i, $divisor, $tamaño){
         $palabra = "";
         for ($k=$i; $k < $tamaño; $k++) { 
             $palabra = $palabra . " " . $arrayDividido[$k];
@@ -88,7 +88,7 @@
         return $busqueda;
     }
 
-    function removeEmptyElements(&$element){
+   function removeEmptyElements(&$element){
         if (is_array($element)) {
             if ($key = key($element)) {
                 $element[$key] = array_filter($element);
@@ -104,9 +104,9 @@
         } else {
             return empty($element) ? false : $element;
         }
-    }
-
+    } 
     function endsWith($haystack, $needle) {
         return substr_compare($haystack, $needle, -strlen($needle)) === 0;
-    }
+    }*/
+
 ?>

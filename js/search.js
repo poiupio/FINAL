@@ -46,7 +46,7 @@ function get(url) {
 }
 
 function initializeTable(data) {
-
+    console.log(data);
     data = JSON.parse(data);
 
     var table = document.createElement("table");

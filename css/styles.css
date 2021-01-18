@@ -50,20 +50,22 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
+    border-style: groove;
+    background-color: #fff;
 }
 
 .searchBar {
     width: 600px;
     height: 30px;
-    border-radius: 5px;
+    border-style: none;
     font-size: 18px;
 }
 
 .searchBtn {
-    margin: 0 10px;
+    background-color: transparent;
     height: 30px;
-    border-radius: 5px;
     font-size: 18px;
+    border-style: none; 
 }
 
 .filtros {
