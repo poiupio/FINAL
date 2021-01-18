@@ -22,8 +22,7 @@ function addDocument(){ //este va a añadirse
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
                 curl_setopt($ch, CURLOPT_POST, TRUE);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string->getBody());
-            
+                curl_setopt($ch, CURLOPT_POSTFIELDS, remover_javascriptCSS($data_string->getBody()));
                 echo curl_exec($ch);
             }
         } catch (\Throwable $th) {
@@ -50,4 +49,12 @@ function petitionGuzzle($url){
         return $e->getHandlerContext();
     }
 }
+
+function remover_javascriptCSS($html) {
+
+    $html = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', "", $html);
+    $html = preg_replace('/<style\b[^>]*>(.*?)<\/style>/is', "", $html);
+    return $html;
+}
+
 ?>
