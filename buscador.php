@@ -35,7 +35,7 @@ $consulta = "MéRIDA not YUCATÁN";
     }*/
 
     //echo $sentenciaSolr;
-    $resultados = file_get_contents($sentenciaSolr);
+    $resultados = file_get_contents($sentenciaSolr.'&wt=json');
     //SolrConection($sentenciaSolr);
     echo json_encode($resultados);
 
