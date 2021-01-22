@@ -43,7 +43,10 @@ main {
 }
 
 .buscador > div {
-    width: 100%;
+    border: 2px solid #C1C7C9;
+    border-radius: 12px;
+    width: 60%;
+    margin: auto;
 }
 
 .searchForm {
@@ -55,15 +58,17 @@ main {
 }
 
 .searchBar {
-    width: 600px;
+    width: 100%;
     height: 30px;
     border-style: none;
     font-size: 18px;
+    margin: 0 2px;
 }
 
 .searchBtn {
     background-color: transparent;
-    height: 30px;
+    margin: 5px 10px;
+    height: 15px;
     font-size: 18px;
     border-style: none; 
 }
@@ -122,4 +127,9 @@ tr > td {
     display: flex;
     flex-direction: column;
     margin: auto;
+}
+
+.autoComplete {
+    width: 48% !important;
+    margin: auto !important;
 }
